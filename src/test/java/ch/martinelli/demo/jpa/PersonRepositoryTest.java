@@ -35,4 +35,13 @@ class PersonRepositoryTest {
 
         assertThat(output).doesNotContain("Hibernate: select ");
     }
+
+    @Test
+    void merge(CapturedOutput output) {
+        Person peter = new Person("Peter");
+        em.merge(peter);
+        em.flush();
+
+        assertThat(output).contains("Hibernate: select ");
+    }
 }
