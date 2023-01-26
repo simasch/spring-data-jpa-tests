@@ -1,5 +1,6 @@
 package ch.martinelli.demo.jpa;
 
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ class PersonRepositoryTest {
 
     @Autowired
     private PersonRepository repository;
+    @Autowired
+    private EntityManager em;
 
     @Test
     void save(CapturedOutput output) {
@@ -22,5 +25,14 @@ class PersonRepositoryTest {
         repository.saveAndFlush(peter);
 
         assertThat(output).contains("Hibernate: select ");
+    }
+
+    @Test
+    void persist(CapturedOutput output) {
+        Person peter = new Person("Peter");
+        em.persist(peter);
+        em.flush();
+
+        assertThat(output).doesNotContain("Hibernate: select ");
     }
 }
